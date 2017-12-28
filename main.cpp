@@ -8,48 +8,76 @@ using namespace std;
 
 int main()
 {
-    float a[100][100], b[100], x[100], y[100];
-    int n = 0, m = 0, i = 0, j = 0;
+    float equation_factors[100][100],
+            equations_value[100],
+            initial_x[100],
+            results[100];
+
+
+    int max_degree= 0,
+            number_of_iters = 0,
+            first_iterator = 0,
+            second_iterator = 0;
     cout << "Enter size of 2d array (Square matrix): ";
-    cin >> n;
-    for (i = 0; i < n; i++)
+    cin >> max_degree;
+
+
+    // get the elements of the n*n square matrix corresponded with the equation factors
+    for (first_iterator = 0; first_iterator < max_degree; first_iterator++)
     {
-        for (j = 0; j < n; j++)
+        for (second_iterator = 0; second_iterator < max_degree; second_iterator++)
         {
-            cout << "[" << i << ", " << j << "]: ";
-            cin >> a[i][j];
+            cout << "[" << first_iterator << ", " << second_iterator << "]: ";
+            cin >> equation_factors[first_iterator][second_iterator];
         }
     }
+
+
+    // the values of the right side of the equality equation as in ax + b = c where we get the c
     cout << "\nEnter Values to the right side of equation\n";
-    for (i = 0; i < n; i++)
+    for (first_iterator = 0; first_iterator < max_degree; first_iterator++)
     {
-        cout << "[" << i << ", " << j << "]: ";
-        cin >> b[i];
+        cout << "[" << first_iterator << ", " << second_iterator << "]: ";
+        cin >> equations_value[first_iterator];
     }
+
+
+    // the x's for x^0 which will be used in the next iterations formula
     cout << "\nEnter initial values of x\n";
-    for (i = 0; i < n; i++)
+    for (first_iterator = 0; first_iterator < max_degree; first_iterator++)
     {
-        cout << "x[" << i << "]: ";
-        cin >> x[i];
+        cout << "x[" << first_iterator << "]: ";
+        cin >> initial_x[first_iterator];
     }
+
+
+    // how much further?
     cout << "\nEnter the no. of iteration : ";
-    cin >> m;
-    while (m > 0)
+    cin >> number_of_iters;
+    while (number_of_iters > 0)
     {
-        for (i = 0; i < n; i++)
+        for (first_iterator = 0; first_iterator < max_degree; first_iterator++)
         {
-            y[i] = (b[i] / a[i][i]);
-            for (j = 0; j < n; j++)
+
+            results[first_iterator] = (equations_value[first_iterator] / equation_factors[first_iterator][first_iterator]);
+            for (second_iterator = 0; second_iterator < max_degree; second_iterator++)
             {
-                if (j == i)
+                if (second_iterator == first_iterator) // not for diagonals
                     continue;
-                y[i] = y[i] - ((a[i][j] / a[i][i]) * x[j]);
-                x[i] = y[i];
+                // the real deal happens below
+                results[first_iterator] = results[first_iterator] - ((equation_factors[first_iterator][second_iterator] / equation_factors[first_iterator][first_iterator]) * initial_x[second_iterator]);
+                initial_x[first_iterator] = results[first_iterator];
             }
-            cout << "x" << i + 1 << " = " << setprecision(5) << y[i] << setw(5);
+
+            // print the result of the i'th iteration
+            cout << "x" << first_iterator + 1 << " = " << setprecision(5) << results[first_iterator] << setw(5);
         }
+
+        // for niceness in the print
         cout << "\n";
-        m--;
+
+        // loop condition manipulation
+        number_of_iters--;
     }
     return 0;
 }
